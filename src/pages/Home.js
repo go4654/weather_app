@@ -41,9 +41,9 @@ export const Home = () => {
             {data && (
               <VStack
                 background={bgColor}
-                h="100%"
-                py="30px"
-                px="20px"
+                h="100vh"
+                pt="30px"
+                pb="50px"
                 justifyContent={"space-between"}
               >
                 <VStack w="100%" textAlign={"center"} mt="30px" color={"white"}>
