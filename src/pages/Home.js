@@ -3,17 +3,18 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { getWeather } from "../api";
 import { Layout } from "../components/Layout";
-import { base, busan, ICON_URL, rain, seoul, sun } from "../Info";
+import { base, ICON_URL, rain, sun } from "../Info";
+import { useCurrentLocation } from "../lib/useCurrentLocation";
 
 export const Home = () => {
   const [bgColor, setBgColor] = useState();
   const [icon, setIcon] = useState();
+  const { lat, lon } = useCurrentLocation();
 
-  const { data, isLoading } = useQuery(
-    ["weather", busan.lat, busan.lon],
-    getWeather,
-    { refetchOnWindowFocus: false, retry: false }
-  );
+  const { data, isLoading } = useQuery(["weather", lat, lon], getWeather, {
+    refetchOnWindowFocus: false,
+    retry: false,
+  });
 
   useEffect(() => {
     if (data?.weather[0].main === "Rain") {
@@ -23,10 +24,10 @@ export const Home = () => {
     } else {
       setBgColor(base.bg);
     }
-
-    setIcon(data?.weather[0].icon);
+    if (data?.weather[0].icon) {
+      setIcon(data?.weather[0].icon);
+    }
   }, [data]);
-
   const date = new Date();
   const hour = date.getHours();
   const min = date.getMinutes();
@@ -43,14 +44,14 @@ export const Home = () => {
                 background={bgColor}
                 h="100vh"
                 pt="30px"
-                pb="50px"
+                pb="100px"
                 justifyContent={"space-between"}
               >
                 <VStack w="100%" textAlign={"center"} mt="30px" color={"white"}>
                   <Heading fontWeight={400}>{data.name}</Heading>
                   <Box>{`${hour}시 ${min}분`}</Box>
 
-                  <Box w="50%">
+                  <Box w="30%">
                     <Img w="100%" src={`${ICON_URL}${icon}@2x.png`} />
                   </Box>
 
